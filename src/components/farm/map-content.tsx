@@ -5,12 +5,9 @@ import { EditControl } from "react-leaflet-draw";
 import * as turf from "@turf/turf";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
+import { MapContentProps } from "@/types/map";
 
-interface MapContentProps {
-  initialCenter: [number, number];
-  onBoundariesChange: (boundaries: GeoJSON.Feature | null) => void;
-  onAreaChange: (area: number | null) => void;
-}
+
 
 export default function MapContent({
   initialCenter,
