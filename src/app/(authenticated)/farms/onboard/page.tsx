@@ -93,10 +93,6 @@ export default function OnboardFarmPage() {
 
   return (
     <div className="mx-auto py-6">
-      <Button variant="ghost" onClick={handleBack} className="mb-6">
-        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-      </Button>
-
       <div className="space-y-2 mb-8">
         <h1 className="text-3xl font-bold tracking-tight">Add New Farm</h1>
         <p className="text-muted-foreground">
