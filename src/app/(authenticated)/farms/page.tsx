@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { FarmCard } from "@/components/farm-card";
+import { FarmCard } from "@/components/farm/farm-card";
 import { Farm } from "@/types/farm";
 import Link from "next/link";
 

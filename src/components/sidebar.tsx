@@ -90,7 +90,7 @@ export function AppSidebar() {
             </Link>
           </Button>
           <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-start"} w-full`}>
-            <SidebarTrigger className="cursor-pointer" />
+            <SidebarTrigger />
           </div>
         </div>
       </SidebarFooter>

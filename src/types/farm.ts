@@ -8,3 +8,8 @@ export interface Farm {
   harvestDate: string;
   ndviData?: any;
 }
+
+export interface FarmMapDrawingProps {
+  onBoundariesChange: (boundaries: GeoJSON.Feature | null) => void;
+  initialCenter?: [number, number];
+}

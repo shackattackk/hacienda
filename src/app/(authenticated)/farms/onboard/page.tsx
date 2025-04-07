@@ -23,8 +23,17 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { FarmMapDrawing } from "@/components/farm/farm-draw";
+import * as turf from "@turf/turf";
 
-// import { FarmMapDrawing } from "@/components/farm-map-drawing"
+const CROP_OPTIONS: { label: string; value: string }[] = [
+  { label: "Sugarcane", value: "sugarcane" },
+  { label: "Corn", value: "corn" },
+  { label: "Wheat", value: "wheat" },
+  { label: "Soybean", value: "soybean" },
+  { label: "Rice", value: "rice" },
+  { label: "Cotton", value: "cotton" },
+];
 
 export default function OnboardFarmPage() {
   const [step, setStep] = useState(1);
@@ -76,7 +85,7 @@ export default function OnboardFarmPage() {
 
   return (
     <div className="mx-auto py-6">
-      <Button variant="ghost" onClick={handleBack} className="mb-6 cursor-pointer">
+      <Button variant="ghost" onClick={handleBack} className="mb-6">
         <ArrowLeft className="mr-2 h-4 w-4" /> Back
       </Button>
 
@@ -89,9 +98,16 @@ export default function OnboardFarmPage() {
 
       <div className="flex justify-between mb-8">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="flex flex-col items-center">
+          <div key={i} className="flex flex-col items-center relative flex-1">
+            {i < 3 && (
+              <div
+                className={`absolute top-5 left-[calc(50%+20px)] w-[calc(100%-40px)] h-0.5 ${
+                  step > i ? "bg-emerald-600" : "bg-gray-200"
+                }`}
+              />
+            )}
             <div
-              className={`h-10 w-10 rounded-full flex items-center justify-center ${
+              className={`h-10 w-10 rounded-full flex items-center justify-center relative z-10 ${
                 step === i
                   ? "bg-emerald-600 text-white"
                   : step > i
@@ -134,7 +150,7 @@ export default function OnboardFarmPage() {
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="size">Size (acres)</Label>
+                <Label htmlFor="size">Size (hectares)</Label>
                 <Input
                   id="size"
                   type="number"
@@ -155,11 +171,11 @@ export default function OnboardFarmPage() {
                     <SelectValue placeholder="Select crop" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="corn">Corn</SelectItem>
-                    <SelectItem value="wheat">Wheat</SelectItem>
-                    <SelectItem value="soybean">Soybean</SelectItem>
-                    <SelectItem value="rice">Rice</SelectItem>
-                    <SelectItem value="cotton">Cotton</SelectItem>
+                    {CROP_OPTIONS.map((option) => (
+                      <SelectItem key={option.value} value={option.value}>
+                        {option.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -212,36 +228,22 @@ export default function OnboardFarmPage() {
       {step === 2 && (
         <Card>
           <CardHeader>
-            <CardTitle>Farm Location</CardTitle>
+            <CardTitle>Farm Boundaries</CardTitle>
             <CardDescription>
-              Define the location and boundaries of your farm
+              Draw the boundaries of your farm on the map below
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-2">
-              <Label htmlFor="location">Location Address</Label>
-              <div className="flex gap-2">
-                <Input
-                  id="location"
-                  placeholder="Enter address or coordinates"
-                  value={farmData.location}
-                  onChange={(e) => updateFarmData("location", e.target.value)}
-                />
-                <Button variant="outline" size="icon">
-                  <MapPin className="h-4 w-4" />
-                </Button>
-              </div>
-            </div>
-            <div className="grid gap-2">
-              <Label>Farm Boundaries</Label>
-              <p className="text-sm text-muted-foreground mb-2">
-                Draw the boundaries of your farm on the map below
-              </p>
-              {/* <FarmMapDrawing
-                onBoundariesChange={(boundaries) =>
-                  updateFarmData("boundaries", boundaries)
-                }
-              /> */}
+              <FarmMapDrawing
+                onBoundariesChange={(boundaries) => {
+                  updateFarmData("boundaries", boundaries);
+                  if (boundaries) {
+                    const areaInHectares = turf.area(boundaries) / 10000;
+                    updateFarmData("size", areaInHectares.toFixed(2));
+                  }
+                }}
+              />
             </div>
           </CardContent>
           <CardFooter className="flex justify-between">
@@ -287,7 +289,9 @@ export default function OnboardFarmPage() {
                   <h3 className="font-medium text-sm text-muted-foreground">
                     Primary Crop
                   </h3>
-                  <p>{farmData.cropType || "Not specified"}</p>
+                  {CROP_OPTIONS.find(
+                    (option) => option.value === farmData.cropType
+                  )?.label || "Not specified"}
                 </div>
                 <div>
                   <h3 className="font-medium text-sm text-muted-foreground">

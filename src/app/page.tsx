@@ -35,7 +35,7 @@ export default function LandingPage() {
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button variant="outline" size="sm" className="cursor-pointer">
+                <Button variant="outline" size="sm">
                   Sign in
                 </Button>
               </SignInButton>
@@ -43,7 +43,7 @@ export default function LandingPage() {
             <SignUpButton mode="modal">
               <Button
                 size="sm"
-                className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
+                className="bg-emerald-600 hover:bg-emerald-700 "
               >
                 Sign up
               </Button>
@@ -68,7 +68,7 @@ export default function LandingPage() {
                 <SignUpButton mode="modal">
                   <Button
                     size="lg"
-                    className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
+                    className="bg-emerald-600 hover:bg-emerald-700 "
                   >
                     Start for free <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
@@ -247,7 +247,7 @@ export default function LandingPage() {
               <SignUpButton mode="modal">
                 <Button
                   size="lg"
-                  className="bg-emerald-600 hover:bg-emerald-700 cursor-pointer"
+                  className="bg-emerald-600 hover:bg-emerald-700 "
                 >
                   Get Started Today
                 </Button>
@@ -268,7 +268,7 @@ export default function LandingPage() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <SignUpButton mode="modal">
-              <Button size="lg" variant="secondary" className="cursor-pointer">
+              <Button size="lg" variant="secondary">
                 Sign Up Now
               </Button>
             </SignUpButton>
