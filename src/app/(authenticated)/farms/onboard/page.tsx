@@ -50,9 +50,17 @@ export default function OnboardFarmPage() {
   const router = useRouter();
 
   const handleNext = () => {
+    console.log(farmData);
     if (step === 1 && (!farmData.name || !farmData.cropType)) {
       toast.info("Missing information", {
         description: "Please fill in all required fields",
+      });
+      return;
+    }
+
+    if (step === 2 && !farmData.boundaries) {
+      toast.info("Missing information", {
+        description: "Please draw the boundaries of your farm",
       });
       return;
     }
@@ -77,10 +85,10 @@ export default function OnboardFarmPage() {
   };
 
   const updateFarmData = (key: string, value: any) => {
-    setFarmData({
-      ...farmData,
+    setFarmData((prevData) => ({
+      ...prevData,
       [key]: value,
-    });
+    }));
   };
 
   return (
@@ -237,7 +245,11 @@ export default function OnboardFarmPage() {
             <div className="grid gap-2">
               <FarmMapDrawing
                 onBoundariesChange={(boundaries) => {
-                  updateFarmData("boundaries", boundaries);
+                  console.log(boundaries);
+                  updateFarmData(
+                    "boundaries",
+                    boundaries ? { ...boundaries } : null
+                  );
                   if (boundaries) {
                     const areaInHectares = turf.area(boundaries) / 10000;
                     updateFarmData("size", areaInHectares.toFixed(2));
