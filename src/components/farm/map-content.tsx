@@ -1,13 +1,11 @@
-// components/farm/map-content.tsx
+"use client";
 import { useRef } from "react";
-import { MapContainer, TileLayer, FeatureGroup } from "react-leaflet";
+import { MapContainer, TileLayer, FeatureGroup, useMap } from "react-leaflet";
 import { EditControl } from "react-leaflet-draw";
 import * as turf from "@turf/turf";
 import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { MapContentProps } from "@/types/map";
-
-
 
 export default function MapContent({
   initialCenter,
@@ -43,7 +41,7 @@ export default function MapContent({
     <MapContainer
       center={initialCenter}
       zoom={13}
-      className={"h-[400px] w-full rounded-lg"}
+      className={"h-[600px] w-full rounded-lg"}
     >
       <TileLayer
         attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
