@@ -9,7 +9,20 @@ export interface Farm {
   ndviData?: any;
 }
 
+export interface FarmData {
+  name: string;
+  size: string;
+  cropType: string;
+  plantingDate: string;
+  harvestDate: string;
+  location: string;
+  notes: string;
+  boundaries: GeoJSON.FeatureCollection | null;
+}
+
 export interface FarmMapDrawingProps {
-  onBoundariesChange: (boundaries: GeoJSON.Feature | null) => void;
+  onBoundariesChange: (boundaries: GeoJSON.FeatureCollection | null) => void;
   initialCenter?: [number, number];
+  readOnly?: boolean;
+  initialBoundaries?: GeoJSON.FeatureCollection | null;
 }

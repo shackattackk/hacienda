@@ -20,6 +20,8 @@ const MapWithNoSSR = dynamic(() => import("./map-content"), {
 export function FarmMapDrawing({
   onBoundariesChange,
   initialCenter = [10.6713, 122.9511],
+  readOnly = false,
+  initialBoundaries = null,
 }: FarmMapDrawingProps) {
   const [area, setArea] = useState<number | null>(null);
 
@@ -30,6 +32,8 @@ export function FarmMapDrawing({
           initialCenter={initialCenter}
           onBoundariesChange={onBoundariesChange}
           onAreaChange={setArea}
+          readOnly={readOnly}
+          initialBoundaries={initialBoundaries}
         />
       </div>
 

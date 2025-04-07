@@ -26,6 +26,21 @@ import { toast } from "sonner";
 import { FarmMapDrawing } from "@/components/farm/farm-draw";
 import * as turf from "@turf/turf";
 
+interface FarmData {
+  name: string;
+  size: string;
+  cropType: string;
+  plantingDate: string;
+  harvestDate: string;
+  location: string;
+  notes: string;
+  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null;
+}
+
+function isPolygon(geometry: GeoJSON.Geometry | undefined): geometry is GeoJSON.Polygon {
+  return geometry !== undefined && geometry.type === 'Polygon';
+}
+
 const CROP_OPTIONS: { label: string; value: string }[] = [
   { label: "Sugarcane", value: "sugarcane" },
   { label: "Corn", value: "corn" },
@@ -37,7 +52,7 @@ const CROP_OPTIONS: { label: string; value: string }[] = [
 
 export default function OnboardFarmPage() {
   const [step, setStep] = useState(1);
-  const [farmData, setFarmData] = useState({
+  const [farmData, setFarmData] = useState<FarmData>({
     name: "",
     size: "",
     cropType: "",
@@ -50,7 +65,6 @@ export default function OnboardFarmPage() {
   const router = useRouter();
 
   const handleNext = () => {
-    console.log(farmData);
     if (step === 1 && (!farmData.name || !farmData.cropType)) {
       toast.info("Missing information", {
         description: "Please fill in all required fields",
@@ -84,8 +98,8 @@ export default function OnboardFarmPage() {
     }
   };
 
-  const updateFarmData = (key: string, value: any) => {
-    setFarmData((prevData) => ({
+  const updateFarmData = (key: keyof FarmData, value: any) => {
+    setFarmData((prevData: FarmData) => ({
       ...prevData,
       [key]: value,
     }));
@@ -241,14 +255,13 @@ export default function OnboardFarmPage() {
             <div className="grid gap-2">
               <FarmMapDrawing
                 onBoundariesChange={(boundaries) => {
-                  console.log(boundaries);
-                  updateFarmData(
-                    "boundaries",
-                    boundaries ? { ...boundaries } : null
-                  );
-                  if (boundaries) {
-                    const areaInHectares = turf.area(boundaries) / 10000;
+                  if (boundaries && boundaries.features && boundaries.features.length > 0) {
+                    updateFarmData("boundaries", boundaries.features[0]);
+                    const areaInHectares = turf.area(boundaries.features[0]) / 10000;
                     updateFarmData("size", areaInHectares.toFixed(2));
+                  } else {
+                    updateFarmData("boundaries", null);
+                    updateFarmData("size", "");
                   }
                 }}
               />
@@ -290,7 +303,7 @@ export default function OnboardFarmPage() {
                     Size
                   </h3>
                   <p>
-                    {farmData.size ? `${farmData.size} acres` : "Not specified"}
+                    {farmData.size ? `${farmData.size} hectares` : "Not specified"}
                   </p>
                 </div>
                 <div>
@@ -334,13 +347,27 @@ export default function OnboardFarmPage() {
                 <h3 className="font-medium text-sm text-muted-foreground mb-2">
                   Farm Boundaries
                 </h3>
-                <div className="border rounded-md h-[200px] bg-slate-50 flex items-center justify-center">
-                  {farmData.boundaries ? (
-                    <p>Boundaries defined</p>
+                <div className="h-[400px] rounded-md overflow-hidden">
+                  {farmData.boundaries && 
+                   isPolygon(farmData.boundaries.geometry) ? (
+                    <FarmMapDrawing
+                      initialCenter={[
+                        farmData.boundaries.geometry.coordinates[0][0][1],
+                        farmData.boundaries.geometry.coordinates[0][0][0],
+                      ]}
+                      onBoundariesChange={() => {}} // No-op since this is read-only
+                      readOnly={true}
+                      initialBoundaries={{
+                        type: "FeatureCollection",
+                        features: [farmData.boundaries]
+                      }}
+                    />
                   ) : (
-                    <p className="text-sm text-muted-foreground">
-                      No boundaries defined
-                    </p>
+                    <div className="h-full bg-slate-50 flex items-center justify-center">
+                      <p className="text-sm text-muted-foreground">
+                        No boundaries defined
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>
