@@ -24,21 +24,16 @@ import {
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { FarmMapDrawing } from "@/components/farm/farm-draw";
+import { FarmData } from "@/types/farm-component";
 import * as turf from "@turf/turf";
+import { useMutation } from "@tanstack/react-query";
+import { ApiError, ApiResponse } from "@/types/api";
+import { Farm } from "@/types/farm";
 
-interface FarmData {
-  name: string;
-  size: string;
-  cropType: string;
-  plantingDate: string;
-  harvestDate: string;
-  location: string;
-  notes: string;
-  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null;
-}
-
-function isPolygon(geometry: GeoJSON.Geometry | undefined): geometry is GeoJSON.Polygon {
-  return geometry !== undefined && geometry.type === 'Polygon';
+function isPolygon(
+  geometry: GeoJSON.Geometry | undefined
+): geometry is GeoJSON.Polygon {
+  return geometry !== undefined && geometry.type === "Polygon";
 }
 
 const CROP_OPTIONS: { label: string; value: string }[] = [
@@ -64,6 +59,24 @@ export default function OnboardFarmPage() {
   });
   const router = useRouter();
 
+  const createFarmMutation = useMutation<ApiResponse<Farm>, Error, FarmData>({
+    mutationFn: async (farmData: FarmData) => {
+      const response = await fetch("/api/farms", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(farmData),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to create farm");
+      }
+
+      return response.json();
+    },
+  });
+
   const handleNext = () => {
     if (step === 1 && (!farmData.name || !farmData.cropType)) {
       toast.info("Missing information", {
@@ -82,11 +95,19 @@ export default function OnboardFarmPage() {
     if (step < 3) {
       setStep(step + 1);
     } else {
-      // Submit form
-      toast.success("Farm added successfully", {
-        description: "Your new farm has been added to your dashboard",
+      createFarmMutation.mutate(farmData, {
+        onSuccess: (data) => {
+          toast.success("Farm added successfully", {
+            description: `${data.data?.name} has been added to your dashboard`,
+          });
+          router.push("/dashboard");
+        },
+        onError: (error) => {
+          toast.error("Failed to add farm", {
+            description: "Please try again",
+          });
+        },
       });
-      router.push("/dashboard");
     }
   };
 
@@ -255,9 +276,14 @@ export default function OnboardFarmPage() {
             <div className="grid gap-2">
               <FarmMapDrawing
                 onBoundariesChange={(boundaries) => {
-                  if (boundaries && boundaries.features && boundaries.features.length > 0) {
+                  if (
+                    boundaries &&
+                    boundaries.features &&
+                    boundaries.features.length > 0
+                  ) {
                     updateFarmData("boundaries", boundaries.features[0]);
-                    const areaInHectares = turf.area(boundaries.features[0]) / 10000;
+                    const areaInHectares =
+                      turf.area(boundaries.features[0]) / 10000;
                     updateFarmData("size", areaInHectares.toFixed(2));
                   } else {
                     updateFarmData("boundaries", null);
@@ -303,7 +329,9 @@ export default function OnboardFarmPage() {
                     Size
                   </h3>
                   <p>
-                    {farmData.size ? `${farmData.size} hectares` : "Not specified"}
+                    {farmData.size
+                      ? `${farmData.size} hectares`
+                      : "Not specified"}
                   </p>
                 </div>
                 <div>
@@ -348,8 +376,8 @@ export default function OnboardFarmPage() {
                   Farm Boundaries
                 </h3>
                 <div className="h-[400px] rounded-md overflow-hidden">
-                  {farmData.boundaries && 
-                   isPolygon(farmData.boundaries.geometry) ? (
+                  {farmData.boundaries &&
+                  isPolygon(farmData.boundaries.geometry) ? (
                     <FarmMapDrawing
                       initialCenter={[
                         farmData.boundaries.geometry.coordinates[0][0][1],
@@ -359,7 +387,7 @@ export default function OnboardFarmPage() {
                       readOnly={true}
                       initialBoundaries={{
                         type: "FeatureCollection",
-                        features: [farmData.boundaries]
+                        features: [farmData.boundaries],
                       }}
                     />
                   ) : (

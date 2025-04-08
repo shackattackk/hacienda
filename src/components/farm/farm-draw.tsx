@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import dynamic from "next/dynamic";
-import { Loader2 } from "lucide-react";
-import type { FarmMapDrawingProps } from "@/types/farm";
+import { Loader2, Hexagon, Pencil, Trash } from "lucide-react";
+import type { FarmMapDrawingProps } from "@/types/farm-component";
 
 const MapWithNoSSR = dynamic(() => import("./map-content"), {
   ssr: false,
@@ -48,11 +48,11 @@ export function FarmMapDrawing({
       <div className="text-sm text-muted-foreground space-y-2">
         <p className="font-medium">How to draw your farm boundaries:</p>
         <ul className="list-disc pl-4 space-y-1">
-          <li>Click the polygon tool (⬡) to start drawing</li>
+          <li><Hexagon className="inline w-4 h-4" /> to start drawing</li>
           <li>Click points on the map to draw your farm boundaries</li>
           <li>Double-click to complete the shape</li>
-          <li>Use the edit tool (✎) to modify points</li>
-          <li>Use the delete tool (🗑) to start over</li>
+          <li><Pencil className="inline w-4 h-4" /> to modify points</li>
+          <li><Trash className="inline w-4 h-4" /> to start over</li>
         </ul>
       </div>
     </div>
