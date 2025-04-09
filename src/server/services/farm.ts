@@ -1,6 +1,7 @@
 import { db } from "@/server/db";
 import { farms } from "@/server/db/schema/farms";
 import { Farm, NewFarm } from "@/types/farm";
+import { eq } from "drizzle-orm";
 
 export async function createFarm(farm: NewFarm, userId: string): Promise<Farm> {
   const [newFarm] = await db
@@ -22,4 +23,12 @@ export async function createFarm(farm: NewFarm, userId: string): Promise<Farm> {
   }
 
   return newFarm;
+}
+
+export async function getFarmsByUserId(userId: string): Promise<Farm[]> {
+  const userFarms = await db
+    .select()
+    .from(farms)
+    .where(eq(farms.userId, userId));
+  return userFarms;
 }
