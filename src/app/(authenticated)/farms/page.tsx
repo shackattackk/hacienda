@@ -1,34 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { FarmCard } from "@/components/farm/farm-card";
 import { useQuery } from "@tanstack/react-query";
-import { getFarmsByUserId } from "@/server/services/farm";
 import { Farm } from "@/types/farm";
 
 export default function FarmsPage() {
-  const [open, setOpen] = useState(false);
-
   const { data: farms, isLoading } = useQuery<Farm[]>({
     queryKey: ["farms"],
     queryFn: async () => {
@@ -52,7 +29,11 @@ export default function FarmsPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {farms?.map((farm) => (
-          <FarmCard key={farm.id} farm={farm} />
+          <FarmCard
+            key={farm.id}
+            farm={farm}
+            boundaries={farm.boundaries as GeoJSON.Feature<GeoJSON.Polygon>}
+          />
         ))}
       </div>
     </div>

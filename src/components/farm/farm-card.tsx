@@ -15,14 +15,51 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { getLocationFromAddress } from "@/lib/geocoding";
+import { GeocodingResponse } from "@/lib/geocoding";
+import * as turf from "@turf/turf";
 
 interface FarmCardProps {
   farm: Farm;
+  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null;
   onDelete?: () => void;
 }
 
-export function FarmCard({ farm }: FarmCardProps) {
+function getCoordinates(
+  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null
+): [number, number] | null {
+  if (!boundaries) return null;
+  
+  const coordinates = boundaries.geometry.coordinates[0];
+  if (coordinates && coordinates.length > 0) {
+    const firstCoord = coordinates[0];
+    if (firstCoord && firstCoord.length >= 2) {
+      return [firstCoord[0], firstCoord[1]];
+    }
+  }
+  return null;
+}
+
+export function FarmCard({ farm, boundaries }: FarmCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+
+  let latitude: number | undefined;
+  let longitude: number | undefined;
+
+  const coordinates = getCoordinates(boundaries);
+  console.log(coordinates);
+  if (coordinates) {
+    latitude = coordinates[1];
+    longitude = coordinates[0];
+    console.log(latitude, longitude);
+  }
+
+  const { data: location } = useQuery<GeocodingResponse>({
+    queryKey: ["location", latitude, longitude],
+    queryFn: () => getLocationFromAddress(latitude!, longitude!),
+    enabled: !!latitude && !!longitude,
+  });
 
   return (
     <Card className="overflow-hidden p-0">
@@ -30,9 +67,19 @@ export function FarmCard({ farm }: FarmCardProps) {
         <div className="absolute inset-0 bg-black/20" />
         <div className="absolute bottom-3 left-3 right-3 text-white">
           <h3 className="font-bold text-lg">{farm.name}</h3>
-          <div className="flex items-center text-xs">
-            <MapPin className="h-3 w-3 mr-1" />
-            {farm.name}
+          <div className="flex flex-col text-xs">
+            <div className="flex items-center">
+              <MapPin className="h-3 w-3 mr-1" />
+              {location ? (
+                <span>
+                  {location.address?.town || ""},{" "}
+                  {location.address?.state || ""},{" "}
+                  {location.address?.country || ""}
+                </span>
+              ) : (
+                <span>Loading location...</span>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -50,14 +97,18 @@ export function FarmCard({ farm }: FarmCardProps) {
             <p className="text-muted-foreground">Planted</p>
             <p className="font-medium flex items-center">
               <Calendar className="h-3 w-3 mr-1" />
-              {farm.plantingDate ? new Date(farm.plantingDate).toLocaleDateString() : "N/A"}
+              {farm.plantingDate
+                ? new Date(farm.plantingDate).toLocaleDateString()
+                : "N/A"}
             </p>
           </div>
           <div>
             <p className="text-muted-foreground">Harvested</p>
             <p className="font-medium flex items-center">
               <Calendar className="h-3 w-3 mr-1" />
-              {farm.harvestDate ? new Date(farm.harvestDate).toLocaleDateString() : "N/A"}
+              {farm.harvestDate
+                ? new Date(farm.harvestDate).toLocaleDateString()
+                : "N/A"}
             </p>
           </div>
           <div>
@@ -113,3 +164,4 @@ export function FarmCard({ farm }: FarmCardProps) {
     </Card>
   );
 }
+
