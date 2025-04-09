@@ -27,23 +27,14 @@ import { FarmMapDrawing } from "@/components/farm/farm-draw";
 import { FarmData } from "@/types/farm-component";
 import * as turf from "@turf/turf";
 import { useMutation } from "@tanstack/react-query";
-import { ApiError, ApiResponse } from "@/types/api";
+import { ApiResponse } from "@/types/api";
 import { Farm } from "@/types/farm";
+import { CROP_OPTIONS } from "@/lib/constants";
+import { isPolygon } from "@/lib/utils";
 
-function isPolygon(
-  geometry: GeoJSON.Geometry | undefined
-): geometry is GeoJSON.Polygon {
-  return geometry !== undefined && geometry.type === "Polygon";
-}
 
-const CROP_OPTIONS: { label: string; value: string }[] = [
-  { label: "Sugarcane", value: "sugarcane" },
-  { label: "Corn", value: "corn" },
-  { label: "Wheat", value: "wheat" },
-  { label: "Soybean", value: "soybean" },
-  { label: "Rice", value: "rice" },
-  { label: "Cotton", value: "cotton" },
-];
+
+
 
 export default function OnboardFarmPage() {
   const [step, setStep] = useState(1);

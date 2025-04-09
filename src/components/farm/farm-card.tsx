@@ -18,28 +18,27 @@ import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getLocationFromAddress } from "@/lib/geocoding";
 import { GeocodingResponse } from "@/lib/geocoding";
-import * as turf from "@turf/turf";
+import { CROP_OPTIONS } from "@/lib/constants";
 
 interface FarmCardProps {
   farm: Farm;
-  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null;
+  boundaries: GeoJSON.Feature<GeoJSON.Polygon>;
   onDelete?: () => void;
 }
 
-function getCoordinates(
-  boundaries: GeoJSON.Feature<GeoJSON.Polygon> | null
-): [number, number] | null {
-  if (!boundaries) return null;
-  
-  const coordinates = boundaries.geometry.coordinates[0];
-  if (coordinates && coordinates.length > 0) {
-    const firstCoord = coordinates[0];
+const getCoordinates = (boundaries: GeoJSON.Feature<GeoJSON.Polygon>) => {
+  if (
+    boundaries &&
+    boundaries.geometry &&
+    boundaries.geometry.coordinates &&
+    boundaries.geometry.coordinates[0]
+  ) {
+    const firstCoord = boundaries.geometry.coordinates[0][0];
     if (firstCoord && firstCoord.length >= 2) {
-      return [firstCoord[0], firstCoord[1]];
+      return firstCoord;
     }
   }
-  return null;
-}
+};
 
 export function FarmCard({ farm, boundaries }: FarmCardProps) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
@@ -52,7 +51,6 @@ export function FarmCard({ farm, boundaries }: FarmCardProps) {
   if (coordinates) {
     latitude = coordinates[1];
     longitude = coordinates[0];
-    console.log(latitude, longitude);
   }
 
   const { data: location } = useQuery<GeocodingResponse>({
@@ -87,7 +85,10 @@ export function FarmCard({ farm, boundaries }: FarmCardProps) {
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <p className="text-muted-foreground">Crop</p>
-            <p className="font-medium">{farm.cropType}</p>
+            <p className="font-medium">
+              {CROP_OPTIONS.find((crop) => crop.value === farm.cropType)
+                ?.label || "N/A"}
+            </p>
           </div>
           <div>
             <p className="text-muted-foreground">Size</p>
@@ -164,4 +165,3 @@ export function FarmCard({ farm, boundaries }: FarmCardProps) {
     </Card>
   );
 }
-
