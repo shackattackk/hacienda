@@ -5,39 +5,35 @@ import { MapContainer, TileLayer, useMap, GeoJSON } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Farm } from "@/types/farm";
+import type { Feature, Polygon, MultiPolygon } from "geojson";
 
 interface MapComponentProps {
   farm: Farm;
 }
 
-interface GeoJSONFeature {
-  type: "Feature";
-  geometry: {
-    type: string;
-    coordinates: number[][][] | number[][][][] | number[][][][][];
-  };
-  properties: Record<string, any>;
+type FarmBoundary = Feature<Polygon | MultiPolygon>;
+
+function isValidGeoJSON(data: unknown): data is FarmBoundary {
+  if (!data || typeof data !== "object") return false;
+
+  const obj = data as Record<string, unknown>;
+  if (obj.type !== "Feature") return false;
+
+  const geometry = obj.geometry as Record<string, unknown>;
+  if (!geometry || typeof geometry !== "object") return false;
+  if (geometry.type !== "Polygon" && geometry.type !== "MultiPolygon")
+    return false;
+  if (!Array.isArray(geometry.coordinates)) return false;
+
+  return true;
 }
 
-function isValidGeoJSON(data: any): data is GeoJSONFeature {
-  return (
-    data &&
-    typeof data === "object" &&
-    data.type === "Feature" &&
-    data.geometry &&
-    typeof data.geometry === "object" &&
-    "type" in data.geometry &&
-    "coordinates" in data.geometry
-  );
-}
-
-// Custom hook to handle map updates
 function MapUpdater({ farm }: { farm: Farm }) {
   const map = useMap();
 
   useEffect(() => {
     if (farm.boundaries && isValidGeoJSON(farm.boundaries)) {
-      const geoJsonLayer = L.geoJSON(farm.boundaries as any);
+      const geoJsonLayer = L.geoJSON(farm.boundaries);
       const bounds = geoJsonLayer.getBounds();
       map.fitBounds(bounds);
     }
@@ -54,12 +50,10 @@ export default function MapComponent({ farm }: MapComponentProps) {
         zoom={13}
         style={{ height: "100%", width: "100%" }}
       >
-        {/* Base satellite layer */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
         />
-        {/* Minimal labels overlay */}
         <TileLayer
           url="https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}"
           attribution='&copy; <a href="https://www.esri.com/">Esri</a>'
@@ -67,7 +61,7 @@ export default function MapComponent({ farm }: MapComponentProps) {
         />
         {farm.boundaries && isValidGeoJSON(farm.boundaries) ? (
           <GeoJSON
-            data={farm.boundaries as any}
+            data={farm.boundaries}
             style={{
               color: "#22c55e",
               weight: 2,
