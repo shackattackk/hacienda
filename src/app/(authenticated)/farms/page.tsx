@@ -2,19 +2,10 @@
 
 import { useState } from "react";
 import { FarmCard } from "@/components/farm/farm-card";
-import { useQuery } from "@tanstack/react-query";
-import { Farm } from "@/types/farm";
+import { useFarms } from "@/hooks/use-farms";
 
 export default function FarmsPage() {
-  const { data: farms, isLoading } = useQuery<Farm[]>({
-    queryKey: ["farms"],
-    queryFn: async () => {
-      const response = await fetch("/api/farms");
-      if (!response.ok) throw new Error("Error fetching farms");
-      const data = await response.json();
-      return data.data;
-    },
-  });
+  const { data: farms } = useFarms();
 
   return (
     <div className="container mx-auto max-w-7xl">

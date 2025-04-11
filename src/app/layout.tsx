@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
-import { SidebarProvider } from "@/components/ui/sidebar";
 import { Toaster } from "@/components/ui/sonner";
 import { Providers } from "@/app/providers";
 import "@/styles/globals.css";
@@ -21,13 +20,11 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <Providers>
-        <SidebarProvider>
-          <html lang="en">
-            <body className={`${inter.className} antialiased w-full`}>
-              {children}
-            </body>
-          </html>
-        </SidebarProvider>
+        <html lang="en">
+          <body className={`${inter.className} antialiased w-full`}>
+            {children}
+          </body>
+        </html>
       </Providers>
       <Toaster />
     </ClerkProvider>

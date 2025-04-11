@@ -15,10 +15,8 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getLocationFromAddress } from "@/lib/geocoding";
-import { GeocodingResponse } from "@/lib/geocoding";
 import { CROP_OPTIONS } from "@/lib/constants";
+import { useLocation } from "@/hooks/use-location";
 
 interface FarmCardProps {
   farm: Farm;
@@ -53,11 +51,7 @@ export function FarmCard({ farm, boundaries }: FarmCardProps) {
     longitude = coordinates[0];
   }
 
-  const { data: location } = useQuery<GeocodingResponse>({
-    queryKey: ["location", latitude, longitude],
-    queryFn: () => getLocationFromAddress(latitude!, longitude!),
-    enabled: !!latitude && !!longitude,
-  });
+  const { data: location } = useLocation({ latitude, longitude });
 
   return (
     <Card className="overflow-hidden p-0">
