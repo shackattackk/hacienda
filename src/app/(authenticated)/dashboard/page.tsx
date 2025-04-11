@@ -17,6 +17,7 @@ import { Insights } from "@/components/dashboard/insights";
 import { FarmSelector } from "@/components/dashboard/farm-selector";
 import { WeatherWidget } from "@/components/dashboard/weather-widget";
 import { useFarms } from "@/hooks/use-farms";
+import { NdviMap } from "@/components/dashboard/ndvi-map";
 
 export default function Dashboard() {
   const { data: farms, isLoading } = useFarms();
@@ -100,7 +101,7 @@ export default function Dashboard() {
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-0">
-                {/* <NdviMap farm={selectedFarm} /> */}
+                <NdviMap farm={selectedFarm} />
               </CardContent>
             </Card>
 
