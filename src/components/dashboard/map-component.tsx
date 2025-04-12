@@ -1,7 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, useMap, GeoJSON, ImageOverlay } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  useMap,
+  GeoJSON,
+  ImageOverlay,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Farm } from "@/types/farm";
@@ -50,6 +56,19 @@ function MapUpdater({ farm, bounds }: { farm: Farm; bounds?: L.LatLngBounds }) {
   return null;
 }
 
+function NdviLegend() {
+  return (
+    <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg z-[1000]">
+      <div className="text-sm font-medium mb-2">NDVI Values</div>
+      <div className="flex items-center space-x-2">
+        <span className="text-xs">Low</span>
+        <div className="h-4 w-32 bg-gradient-to-r from-[#ff0000] via-[#ff6600] via-[#ffcc00] via-[#99ff00] via-[#00ff00] to-[#006600]"></div>
+        <span className="text-xs">High</span>
+      </div>
+    </div>
+  );
+}
+
 export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
   const [bounds, setBounds] = useState<L.LatLngBounds>();
   const [ndviUrl, setNdviUrl] = useState<string>();
@@ -62,7 +81,7 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
 
   useEffect(() => {
     if (ndviImage && bounds) {
-      const blob = new Blob([ndviImage], { type: 'image/png' });
+      const blob = new Blob([ndviImage], { type: "image/png" });
       const url = URL.createObjectURL(blob);
       setNdviUrl(url);
 
@@ -73,7 +92,7 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
   }, [ndviImage, bounds]);
 
   return (
-    <div className="h-[600px] w-full">
+    <div className="h-[600px] w-full relative">
       <MapContainer
         center={[0, 0]}
         zoom={13}
@@ -92,21 +111,18 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
           <GeoJSON
             data={farm.boundaries}
             style={{
-              color: "#22c55e",
-              weight: 2,
+              color: "#3b82f6",
+              weight: 3,
               fillOpacity: 0.1,
             }}
           />
         ) : null}
         {ndviUrl && bounds && (
-          <ImageOverlay
-            url={ndviUrl}
-            bounds={bounds}
-            opacity={0.6}
-          />
+          <ImageOverlay url={ndviUrl} bounds={bounds} opacity={0.7} />
         )}
         <MapUpdater farm={farm} bounds={bounds} />
       </MapContainer>
+      {ndviUrl && <NdviLegend />}
     </div>
   );
 }
