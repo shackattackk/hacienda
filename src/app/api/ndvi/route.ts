@@ -59,7 +59,6 @@ export async function GET(request: NextRequest) {
 
     const { access_token } = await tokenResponse.json();
 
-    // Request NDVI data with structure matching Python implementation
     const ndviResponse = await fetch("https://services.sentinel-hub.com/api/v1/process", {
       method: "POST",
       headers: {

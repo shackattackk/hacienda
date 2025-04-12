@@ -60,7 +60,6 @@ export default function Dashboard() {
     );
   }
 
-  // If farms exist but no farm is selected, select the first one
   if (!selectedFarm) {
     setSelectedFarm(farms[0]);
     return null;
@@ -90,9 +89,7 @@ export default function Dashboard() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          {/* Main content grid */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            {/* NDVI Map - takes up 3/4 of the width on large screens */}
             <Card className="lg:col-span-3">
               <CardHeader className="pb-2">
                 <CardTitle>NDVI Map</CardTitle>
@@ -105,7 +102,6 @@ export default function Dashboard() {
               </CardContent>
             </Card>
 
-            {/* Right sidebar with weather and crop health - takes up 1/4 of the width */}
             <div className="space-y-6">
               <WeatherWidget
                 boundaries={
@@ -116,7 +112,6 @@ export default function Dashboard() {
             </div>
           </div>
 
-          {/* AI Insights - full width */}
           <Card>
             <CardHeader>
               <CardTitle>AI-Powered Insights</CardTitle>

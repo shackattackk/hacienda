@@ -71,7 +71,7 @@ function NdviLegend() {
 
 export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
   const [bounds, setBounds] = useState<L.LatLngBounds>();
-  const [ndviUrl, setNdviUrl] = useState<string>();
+  const [ndviImageUrl, setNdviImageUrl] = useState<string>();
 
   useEffect(() => {
     if (farm.boundaries && isValidGeoJSON(farm.boundaries)) {
@@ -83,7 +83,7 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
     if (ndviImage && bounds) {
       const blob = new Blob([ndviImage], { type: "image/png" });
       const url = URL.createObjectURL(blob);
-      setNdviUrl(url);
+      setNdviImageUrl(url);
 
       return () => {
         URL.revokeObjectURL(url);
@@ -117,12 +117,12 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
             }}
           />
         ) : null}
-        {ndviUrl && bounds && (
-          <ImageOverlay url={ndviUrl} bounds={bounds} opacity={0.7} />
+        {ndviImageUrl && bounds && (
+          <ImageOverlay url={ndviImageUrl} bounds={bounds} opacity={0.7} />
         )}
         <MapUpdater farm={farm} bounds={bounds} />
       </MapContainer>
-      {ndviUrl && <NdviLegend />}
+      {ndviImageUrl && <NdviLegend />}
     </div>
   );
 }
