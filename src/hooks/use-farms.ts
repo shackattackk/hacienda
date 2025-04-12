@@ -8,8 +8,9 @@ export function useFarms() {
     queryFn: async () => {
       const response = await fetch("/api/farms");
       if (!response.ok) throw new Error("Error fetching farms");
-      const data = await response.json() as ApiResponse<Farm[]>;
+      const data = (await response.json()) as ApiResponse<Farm[]>;
       return data.data;
     },
   });
 }
+

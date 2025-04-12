@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { MapContainer, TileLayer, useMap, GeoJSON } from "react-leaflet";
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, useMap, GeoJSON, ImageOverlay } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import { Farm } from "@/types/farm";
@@ -9,6 +9,7 @@ import type { Feature, Polygon, MultiPolygon } from "geojson";
 
 interface MapComponentProps {
   farm: Farm;
+  ndviImage?: ArrayBuffer;
 }
 
 type FarmBoundary = Feature<Polygon | MultiPolygon>;
@@ -28,21 +29,49 @@ function isValidGeoJSON(data: unknown): data is FarmBoundary {
   return true;
 }
 
-function MapUpdater({ farm }: { farm: Farm }) {
+function getBoundsFromGeoJSON(data: FarmBoundary): L.LatLngBounds {
+  const geoJsonLayer = L.geoJSON(data);
+  return geoJsonLayer.getBounds();
+}
+
+function MapUpdater({ farm, bounds }: { farm: Farm; bounds?: L.LatLngBounds }) {
   const map = useMap();
 
   useEffect(() => {
-    if (farm.boundaries && isValidGeoJSON(farm.boundaries)) {
+    if (bounds) {
+      map.fitBounds(bounds);
+    } else if (farm.boundaries && isValidGeoJSON(farm.boundaries)) {
       const geoJsonLayer = L.geoJSON(farm.boundaries);
       const bounds = geoJsonLayer.getBounds();
       map.fitBounds(bounds);
     }
-  }, [farm, map]);
+  }, [farm, map, bounds]);
 
   return null;
 }
 
-export default function MapComponent({ farm }: MapComponentProps) {
+export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
+  const [bounds, setBounds] = useState<L.LatLngBounds>();
+  const [ndviUrl, setNdviUrl] = useState<string>();
+
+  useEffect(() => {
+    if (farm.boundaries && isValidGeoJSON(farm.boundaries)) {
+      setBounds(getBoundsFromGeoJSON(farm.boundaries));
+    }
+  }, [farm.boundaries]);
+
+  useEffect(() => {
+    if (ndviImage && bounds) {
+      const blob = new Blob([ndviImage], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      setNdviUrl(url);
+
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [ndviImage, bounds]);
+
   return (
     <div className="h-[600px] w-full">
       <MapContainer
@@ -69,7 +98,14 @@ export default function MapComponent({ farm }: MapComponentProps) {
             }}
           />
         ) : null}
-        <MapUpdater farm={farm} />
+        {ndviUrl && bounds && (
+          <ImageOverlay
+            url={ndviUrl}
+            bounds={bounds}
+            opacity={0.6}
+          />
+        )}
+        <MapUpdater farm={farm} bounds={bounds} />
       </MapContainer>
     </div>
   );
