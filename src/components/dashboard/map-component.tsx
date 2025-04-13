@@ -109,6 +109,7 @@ export default function MapComponent({ farm, ndviImage }: MapComponentProps) {
         />
         {farm.boundaries && isValidGeoJSON(farm.boundaries) ? (
           <GeoJSON
+            key={farm.id}
             data={farm.boundaries}
             style={{
               color: "#3b82f6",

@@ -27,7 +27,6 @@ export async function getLocationFromAddress(
     throw new Error("Failed to fetch location from address");
   }
   const data = await response.json();
-  console.log(data)
   return {
     address: data.address,
     displayName: data.display_name,
