@@ -28,7 +28,11 @@ export function AppSidebar() {
 
   return (
     <Sidebar variant="inset" collapsible="icon">
-      <SidebarHeader className={`flex flex-col items-center justify-center py-4 ${isCollapsed ? "px-2" : "px-4"}`}>
+      <SidebarHeader
+        className={`flex flex-col items-center justify-center py-4 ${
+          isCollapsed ? "px-2" : "px-4"
+        }`}
+      >
         <Link href="/dashboard" className="flex items-center gap-2">
           <div className="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center">
             <Leaf className="h-4 w-4 text-emerald-600" />
@@ -44,7 +48,10 @@ export function AppSidebar() {
               isActive={isActive("/dashboard")}
               tooltip="Dashboard"
             >
-              <Link href="/dashboard" className={isCollapsed ? "justify-center w-full" : ""}>
+              <Link
+                href="/dashboard"
+                className={isCollapsed ? "justify-center w-full" : ""}
+              >
                 <Home className="h-4 w-4" />
                 {!isCollapsed && <span>Dashboard</span>}
               </Link>
@@ -56,7 +63,10 @@ export function AppSidebar() {
               isActive={isActive("/farms")}
               tooltip="Farms"
             >
-              <Link href="/farms" className={isCollapsed ? "justify-center w-full" : ""}>
+              <Link
+                href="/farms"
+                className={isCollapsed ? "justify-center w-full" : ""}
+              >
                 <Map className="h-4 w-4" />
                 {!isCollapsed && <span>Farms</span>}
               </Link>
@@ -68,7 +78,10 @@ export function AppSidebar() {
               isActive={isActive("/settings")}
               tooltip="Settings"
             >
-              <Link href="/settings" className={isCollapsed ? "justify-center w-full" : ""}>
+              <Link
+                href="/settings"
+                className={isCollapsed ? "justify-center w-full" : ""}
+              >
                 <Settings className="h-4 w-4" />
                 {!isCollapsed && <span>Settings</span>}
               </Link>
@@ -89,7 +102,11 @@ export function AppSidebar() {
               {!isCollapsed && "Add New Farm"}
             </Link>
           </Button>
-          <div className={`flex items-center ${isCollapsed ? "justify-center" : "justify-start"} w-full`}>
+          <div
+            className={`flex items-center ${
+              isCollapsed ? "justify-center" : "justify-start"
+            } w-full`}
+          >
             <SidebarTrigger />
           </div>
         </div>

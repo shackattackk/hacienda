@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
 
     // Get date range for last 60 days
     const endDate = new Date();
-    const startDate = subDays(endDate, 60);
+    const startDate = subDays(endDate, 90);
 
     const tokenResponse = await fetch("https://services.sentinel-hub.com/oauth/token", {
       method: "POST",
