@@ -86,20 +86,26 @@ export function WeatherWidget({ boundaries }: WeatherWidgetProps) {
           </div>
         </div>
         <div className="flex justify-between">
-          {weatherData.list.slice(0, 5).map((forecast) => {
-            const DayIcon = getWeatherIcon(forecast.weather[0]);
-            return (
-              <div key={forecast.dt} className="flex flex-col items-center">
-                <p className="text-xs">
-                  {new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
-                    weekday: "short",
-                  })}
-                </p>
-                <DayIcon className="h-4 w-4 my-1" />
-                <p className="text-xs">{Math.round(forecast.main.temp)}°</p>
-              </div>
-            );
-          })}
+          {weatherData.list
+            .filter((forecast) => {
+              const [date, time] = forecast.dt_txt.split(" ");
+              return time.startsWith("12:00");
+            })
+            .slice(0, 5)
+            .map((forecast) => {
+              const DayIcon = getWeatherIcon(forecast.weather[0]);
+              return (
+                <div key={forecast.dt} className="flex flex-col items-center">
+                  <p className="text-xs">
+                    {new Date(forecast.dt * 1000).toLocaleDateString("en-US", {
+                      weekday: "short",
+                    })}
+                  </p>
+                  <DayIcon className="h-4 w-4 my-1" />
+                  <p className="text-xs">{Math.round(forecast.main.temp)}°</p>
+                </div>
+              );
+            })}
         </div>
       </CardContent>
     </Card>
