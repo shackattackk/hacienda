@@ -2,7 +2,6 @@
 
 import { Cloud, CloudRain, Droplets, Sun } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { useLocation } from "@/hooks/use-location";
 import { useWeather } from "@/hooks/use-weather";
 import { WeatherCondition } from "@/types/weather";
 
@@ -26,11 +25,6 @@ const getWeatherIcon = (condition: WeatherCondition) => {
 export function WeatherWidget({ boundaries }: WeatherWidgetProps) {
   const latitude = boundaries.geometry.coordinates[0][0][1];
   const longitude = boundaries.geometry.coordinates[0][0][0];
-
-  const { data: locationData } = useLocation({
-    latitude,
-    longitude,
-  });
 
   const { data: weatherData, isLoading } = useWeather(latitude, longitude);
 

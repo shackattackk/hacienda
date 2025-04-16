@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { subDays } from "date-fns";
 
 function formatDate(date: Date): string {
-  return date.toISOString().replace('Z', '+00:00');
+  return date.toISOString().replace("Z", "+00:00");
 }
 
 export async function GET(request: NextRequest) {
@@ -17,7 +17,6 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Parse and validate bbox
     const bboxArray = bbox.split(",").map(Number);
     if (bboxArray.length !== 4 || bboxArray.some(isNaN)) {
       return NextResponse.json(
@@ -26,32 +25,32 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Calculate aspect ratio and dimensions
     const [minX, minY, maxX, maxY] = bboxArray;
     const bboxWidth = Math.abs(maxX - minX);
     const bboxHeight = Math.abs(maxY - minY);
     const ratio = bboxWidth / bboxHeight;
 
-    // Set base resolution
     const baseResolution = 1024;
-    const outputWidth = ratio >= 1 ? baseResolution : Math.round(baseResolution * ratio);
-    const outputHeight = ratio >= 1 ? Math.round(baseResolution / ratio) : baseResolution;
+    const outputWidth =
+      ratio >= 1 ? baseResolution : Math.round(baseResolution * ratio);
+    const outputHeight =
+      ratio >= 1 ? Math.round(baseResolution / ratio) : baseResolution;
 
-    // Get date range for last 60 days
-    const endDate = new Date();
-    const startDate = subDays(endDate, 90);
 
-    const tokenResponse = await fetch("https://services.sentinel-hub.com/oauth/token", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        grant_type: "client_credentials",
-        client_id: process.env.SENTINEL_HUB_CLIENT_ID!,
-        client_secret: process.env.SENTINEL_HUB_CLIENT_SECRET!,
-      }),
-    });
+    const tokenResponse = await fetch(
+      "https://services.sentinel-hub.com/oauth/token",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
+        body: new URLSearchParams({
+          grant_type: "client_credentials",
+          client_id: process.env.SENTINEL_HUB_CLIENT_ID!,
+          client_secret: process.env.SENTINEL_HUB_CLIENT_SECRET!,
+        }),
+      }
+    );
 
     if (!tokenResponse.ok) {
       throw new Error("Failed to get Sentinel Hub token");
@@ -59,44 +58,48 @@ export async function GET(request: NextRequest) {
 
     const { access_token } = await tokenResponse.json();
 
-    const ndviResponse = await fetch("https://services.sentinel-hub.com/api/v1/process", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${access_token}`,
-      },
-      body: JSON.stringify({
-        input: {
-          bounds: {
-            bbox: bboxArray,
-            properties: {
-              crs: "http://www.opengis.net/def/crs/EPSG/0/4326"
-            }
-          },
-          data: [{
-            type: "sentinel-2-l2a",
-            dataFilter: {
-              timeRange: {
-                from: formatDate(startDate),
-                to: formatDate(endDate)
+    const ndviResponse = await fetch(
+      "https://services.sentinel-hub.com/api/v1/process",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${access_token}`,
+        },
+        body: JSON.stringify({
+          input: {
+            bounds: {
+              bbox: bboxArray,
+              properties: {
+                crs: "http://www.opengis.net/def/crs/EPSG/0/4326",
               },
-              mosaickingOrder: "leastCC",
-              maxCloudCoverage: 20,
-              previewMode: "PREVIEW"
-            }
-          }]
-        },
-        output: {
-          width: outputWidth,
-          height: outputHeight,
-          responses: [{
-            identifier: "default",
-            format: {
-              type: "image/png"
-            }
-          }]
-        },
-        evalscript: `
+            },
+            data: [
+              {
+                type: "sentinel-2-l2a",
+                dataFilter: {
+                  timeRange: {
+                    from: new Date().toISOString().split('T')[0] + "T00:00:00.000Z",
+                    to: new Date().toISOString().split('T')[0] + "T23:59:59.000Z",
+                  },
+                  mosaickingOrder: "mostRecent",
+                },
+              },
+            ],
+          },
+          output: {
+            width: outputWidth,
+            height: outputHeight,
+            responses: [
+              {
+                identifier: "default",
+                format: {
+                  type: "image/png",
+                },
+              },
+            ],
+          },
+          evalscript: `
           //VERSION=3
           function setup() {
             return {
@@ -156,9 +159,10 @@ export async function GET(request: NextRequest) {
             
             return [r, g, b, a];
           }
-        `
-      }),
-    });
+        `,
+        }),
+      }
+    );
 
     if (!ndviResponse.ok) {
       console.error("Sentinel Hub Error:", await ndviResponse.text());
@@ -172,7 +176,9 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error("Error processing NDVI request:", error);
     return NextResponse.json(
-      { error: error instanceof Error ? error.message : "Internal server error" },
+      {
+        error: error instanceof Error ? error.message : "Internal server error",
+      },
       { status: 500 }
     );
   }
