@@ -18,12 +18,19 @@ import { FarmSelector } from "@/components/dashboard/farm-selector";
 import { WeatherWidget } from "@/components/dashboard/weather-widget";
 import { useFarms } from "@/hooks/use-farms";
 import { NdviMap } from "@/components/dashboard/ndvi-map";
+import CloudCoverageCalendar from "@/components/cloud-calendar";
+import { useCloudCoverage } from "@/hooks/use-cloud-coverage";
 
 export default function Dashboard() {
   const { data: farms, isLoading } = useFarms();
   const [selectedFarm, setSelectedFarm] = useState<Farm | null>(
     farms?.[0] ?? null
   );
+  const { data: cloudCoverage } = useCloudCoverage(selectedFarm);
+
+  const handleDateSelect = (date: Date) => {
+    console.log(date);
+  };
 
   if (isLoading) {
     return (
@@ -74,6 +81,11 @@ export default function Dashboard() {
             Monitor and optimize your farm&apos;s health and productivity
           </p>
         </div>
+        <CloudCoverageCalendar
+          cloudCoverage={cloudCoverage?.cloudCoverage}
+          summary={cloudCoverage?.summary}
+          onDateSelect={handleDateSelect}
+        />
         <FarmSelector
           farms={farms}
           selectedFarm={selectedFarm}

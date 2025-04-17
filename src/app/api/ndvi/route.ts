@@ -79,8 +79,8 @@ export async function GET(request: NextRequest) {
                 type: "sentinel-2-l2a",
                 dataFilter: {
                   timeRange: {
-                    from: new Date().toISOString().split('T')[0] + "T00:00:00.000Z",
-                    to: new Date().toISOString().split('T')[0] + "T23:59:59.000Z",
+                    from: "2025-04-08T00:00:00.000Z",
+                    to: "2025-04-08T23:59:59.000Z",
                   },
                   mosaickingOrder: "mostRecent",
                 },
