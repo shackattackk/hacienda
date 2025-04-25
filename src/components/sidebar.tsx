@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Leaf, Map, Plus, Settings } from "lucide-react";
+import { Home, Leaf, Map, Plus, Settings, BookOpen } from "lucide-react";
 import {
   Sidebar,
   SidebarContent,
@@ -69,6 +69,21 @@ export function AppSidebar() {
               >
                 <Map className="h-4 w-4" />
                 {!isCollapsed && <span>Farms</span>}
+              </Link>
+            </SidebarMenuButton>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <SidebarMenuButton
+              asChild
+              isActive={isActive("/guide")}
+              tooltip="Guide"
+            >
+              <Link
+                href="/guide"
+                className={isCollapsed ? "justify-center w-full" : ""}
+              >
+                <BookOpen className="h-4 w-4" />
+                {!isCollapsed && <span>Guide</span>}
               </Link>
             </SidebarMenuButton>
           </SidebarMenuItem>

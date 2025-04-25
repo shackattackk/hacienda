@@ -3,10 +3,9 @@ import { Bell, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useRouter } from "next/navigation"
 import { UserButton } from "@clerk/nextjs"
+import Link from "next/link"
 
 export function Navbar() {
-  const router = useRouter()
-
   return (
     <div className="border-b">
       <div className="flex h-16 items-center px-4 md:px-6">
@@ -14,8 +13,10 @@ export function Navbar() {
           <Button variant="ghost" size="icon" className="text-muted-foreground">
             <Bell className="h-5 w-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-muted-foreground">
-            <HelpCircle className="h-5 w-5" />
+          <Button asChild variant="ghost" size="icon" className="text-muted-foreground">
+            <Link href="/guide">
+              <HelpCircle className="h-5 w-5" />
+            </Link>
           </Button>
          
           <UserButton 
