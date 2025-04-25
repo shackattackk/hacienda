@@ -58,7 +58,7 @@ function MapUpdater({ farm, bounds }: { farm: Farm; bounds?: L.LatLngBounds }) {
 
 function NdviLegend() {
   return (
-    <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg z-[1000]">
+    <div className="absolute bottom-4 right-4 bg-white p-3 rounded-lg shadow-lg">
       <div className="text-sm font-medium mb-2">NDVI Values</div>
       <div className="flex items-center space-x-2">
         <span className="text-xs">Low</span>
