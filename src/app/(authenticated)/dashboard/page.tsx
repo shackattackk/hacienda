@@ -18,12 +18,19 @@ import { FarmSelector } from "@/components/dashboard/farm-selector";
 import { WeatherWidget } from "@/components/dashboard/weather-widget";
 import { useFarms } from "@/hooks/use-farms";
 import { NdviMap } from "@/components/dashboard/ndvi-map";
+import { DatePicker } from "@/components/dashboard/datepicker";
 
 export default function Dashboard() {
   const { data: farms, isLoading } = useFarms();
   const [selectedFarm, setSelectedFarm] = useState<Farm | null>(
     farms?.[0] ?? null
   );
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+
+  const handleFarmChange = (farm: Farm) => {
+    setSelectedFarm(farm);
+    setSelectedDate(null);
+  };
 
   if (isLoading) {
     return (
@@ -77,7 +84,7 @@ export default function Dashboard() {
         <FarmSelector
           farms={farms}
           selectedFarm={selectedFarm}
-          onSelectFarm={setSelectedFarm}
+          onSelectFarm={handleFarmChange}
         />
       </div>
 
@@ -92,13 +99,24 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
             <Card className="lg:col-span-3">
               <CardHeader className="pb-2">
-                <CardTitle>NDVI Map</CardTitle>
-                <CardDescription>
-                  Vegetation health visualization for {selectedFarm.name}
-                </CardDescription>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                  <div>
+                    <CardTitle>NDVI Map</CardTitle>
+                    <CardDescription>
+                      Vegetation health visualization for {selectedFarm.name}
+                    </CardDescription>
+                  </div>
+                  <DatePicker
+                    bbox={
+                      selectedFarm.boundaries as GeoJSON.Feature<GeoJSON.Polygon>
+                    }
+                    onDateSelect={(date) => setSelectedDate(date ?? null)}
+                    selectedDate={selectedDate ?? undefined}
+                  />
+                </div>
               </CardHeader>
               <CardContent className="p-0">
-                <NdviMap farm={selectedFarm} />
+                <NdviMap farm={selectedFarm} selectedDate={selectedDate} />
               </CardContent>
             </Card>
 

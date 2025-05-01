@@ -11,20 +11,20 @@ const Map = dynamic(() => import("@/components/dashboard/map-component"), {
 });
 
 
-export function NdviMap({ farm }: { farm: Farm }) {
+export function NdviMap({ farm, selectedDate }: { farm: Farm, selectedDate: Date | null }) {
   const {
     data: ndviData,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["ndvi", farm.id],
+    queryKey: ["ndvi", farm.id, selectedDate?.toISOString()],
     queryFn: async () => {
       const bbox = getBoundingBox(farm.boundaries);
       if (!bbox) throw new Error("Invalid farm boundaries");
 
       const url = new URL("/api/ndvi", window.location.origin);
       url.searchParams.append("bbox", bbox);
-
+      url.searchParams.append("date", selectedDate ? selectedDate.toISOString() : new Date().toISOString());
       const response = await fetch(url);
 
       if (!response.ok) {

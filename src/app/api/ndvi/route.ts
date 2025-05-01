@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
-import { subDays } from "date-fns";
+import { format } from "date-fns";
 
-function formatDate(date: Date): string {
-  return date.toISOString().replace("Z", "+00:00");
-}
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const bbox = searchParams.get("bbox");
+  const dateParam = searchParams.get("date");
+  
+  const date = dateParam ? new Date(dateParam) : new Date();
+  
+  // Format the date strings directly with the desired times
+  const startDateStr = `${format(date, 'yyyy-MM-dd')}T00:00:00.000Z`;
+  const endDateStr = `${format(date, 'yyyy-MM-dd')}T23:59:59.999Z`;
+
+  console.log(startDateStr, endDateStr);
 
   try {
     if (!bbox) {
@@ -79,8 +85,8 @@ export async function GET(request: NextRequest) {
                 type: "sentinel-2-l2a",
                 dataFilter: {
                   timeRange: {
-                    from: "2025-04-08T00:00:00.000Z",
-                    to: "2025-04-08T23:59:59.000Z",
+                    from: startDateStr,
+                    to: endDateStr,
                   },
                   mosaickingOrder: "mostRecent",
                 },
