@@ -4,6 +4,11 @@ import { Farm, NewFarm } from "@/types/farm";
 import { eq } from "drizzle-orm";
 
 export async function createFarm(farm: NewFarm, userId: string): Promise<Farm> {
+  const existingFarms = await getFarmsByUserId(userId);
+  if (existingFarms.length > 0) {
+    throw new Error("You can only create one farm per account");
+  }
+
   const [newFarm] = await db
     .insert(farms)
     .values({

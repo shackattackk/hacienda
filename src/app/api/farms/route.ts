@@ -26,6 +26,12 @@ export async function POST(
     const farm = await createFarm(payload, userId);
     return NextResponse.json({ data: farm }, { status: 201 });
   } catch (error) {
+    if (error instanceof Error && error.message === "You can only create one farm per account") {
+      return NextResponse.json(
+        { data: null, error: { message: error.message } },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { data: null, error: { message: "Internal Server Error" } },
       { status: 500 }
