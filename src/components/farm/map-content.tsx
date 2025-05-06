@@ -8,6 +8,9 @@ import "leaflet/dist/leaflet.css";
 import "leaflet-draw/dist/leaflet.draw.css";
 import { MapContentProps } from "@/types/map-component";
 
+interface DrawEvent {
+  layer: L.Polygon;
+}
 export default function MapContent({
   initialCenter,
   onBoundariesChange,
@@ -15,7 +18,7 @@ export default function MapContent({
   readOnly = false,
   initialBoundaries = null,
 }: MapContentProps) {
-  const featureGroupRef = useRef<any>(null);
+  const featureGroupRef = useRef<L.FeatureGroup | null>(null);
 
   useEffect(() => {
     const addBoundaries = () => {
@@ -44,7 +47,7 @@ export default function MapContent({
     return () => clearTimeout(timeoutId);
   }, [initialBoundaries, onAreaChange]);
 
-  const handleCreate = (e: any) => {
+  const handleCreate = (e: DrawEvent) => {
     const layer = e.layer;
     const geoJSON = layer.toGeoJSON();
     const featureCollection: GeoJSON.FeatureCollection = {
@@ -56,10 +59,11 @@ export default function MapContent({
     onBoundariesChange(featureCollection);
   };
 
-  const handleEdit = (e: any) => {
+  const handleEdit = () => {
     const layers = featureGroupRef.current?.getLayers();
     if (layers && layers.length > 0) {
-      const geoJSON = layers[0].toGeoJSON();
+      const layer = layers[0] as L.Polygon;
+      const geoJSON = layer.toGeoJSON();
       const featureCollection: GeoJSON.FeatureCollection = {
         type: "FeatureCollection",
         features: [geoJSON],

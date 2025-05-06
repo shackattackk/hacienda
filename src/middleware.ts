@@ -12,6 +12,7 @@ export default clerkMiddleware(async (auth, req) => {
       await auth.protect();
       return NextResponse.redirect(new URL("/dashboard", req.url));
     } catch (error) {
+      console.error("An error occurred:", error);
       return NextResponse.next();
     }
   }

@@ -1,8 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { SignInButton, SignedOut, SignUpButton } from "@clerk/nextjs";
 import {
   ArrowRight,
@@ -20,6 +18,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import Image from "next/image";
 
 export default function LandingPage() {
   return (
@@ -61,7 +60,7 @@ export default function LandingPage() {
               </h1>
               <p className="text-lg text-gray-600">
                 Monitor crop health, track farm metrics, and get AI-powered
-                insights to optimize your farm's productivity and
+                insights to optimize your farm&apos;s productivity and
                 sustainability.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
@@ -81,10 +80,12 @@ export default function LandingPage() {
             <div className="relative rounded-lg overflow-hidden shadow-xl">
               <div className="aspect-video bg-emerald-900/10 rounded-lg overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/20 to-green-400/20" />
-                <img
+                <Image
                   src="/placeholder.svg?height=600&width=800"
                   alt="Farm dashboard preview"
                   className="w-full h-full object-cover"
+                  width={800}
+                  height={600}
                 />
                 <div className="absolute inset-0 flex items-center justify-center">
                   <div className="text-center p-6 bg-white/90 dark:bg-gray-900/90 rounded-lg shadow-lg max-w-md">
@@ -92,8 +93,8 @@ export default function LandingPage() {
                       Real-time NDVI Visualization
                     </h3>
                     <p className="text-sm text-gray-600 dark:text-gray-300">
-                      Monitor your crops' health with advanced satellite imagery
-                      and AI analysis
+                      Monitor your crops&apos; health with advanced satellite
+                      imagery and AI analysis
                     </p>
                   </div>
                 </div>
@@ -147,7 +148,7 @@ export default function LandingPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-gray-600">
-                  Our AI analyzes your farm's data to provide personalized
+                  Our AI analyzes your farm&apos;s data to provide personalized
                   recommendations for irrigation, fertilization, and pest
                   management.
                 </p>
@@ -181,7 +182,7 @@ export default function LandingPage() {
             <div>
               <div className="aspect-square md:aspect-auto md:h-[500px] bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden relative">
                 <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-green-400/10" />
-                <img
+                <Image
                   src="/placeholder.svg?height=800&width=800"
                   alt="Farmer using tablet in field"
                   className="w-full h-full object-cover"

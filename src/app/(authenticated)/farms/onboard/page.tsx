@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, ArrowRight, Check, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -93,7 +93,7 @@ export default function OnboardFarmPage() {
           });
           router.push("/dashboard");
         },
-        onError: (error) => {
+        onError: () => {
           toast.error("Failed to add farm", {
             description: "Please try again",
           });
@@ -110,7 +110,7 @@ export default function OnboardFarmPage() {
     }
   };
 
-  const updateFarmData = (key: keyof FarmData, value: any) => {
+  const updateFarmData = (key: keyof FarmData, value: string | GeoJSON.Feature<GeoJSON.Polygon> | null) => {
     setFarmData((prevData: FarmData) => ({
       ...prevData,
       [key]: value,
@@ -272,7 +272,7 @@ export default function OnboardFarmPage() {
                     boundaries.features &&
                     boundaries.features.length > 0
                   ) {
-                    updateFarmData("boundaries", boundaries.features[0]);
+                    updateFarmData("boundaries", boundaries.features[0] as GeoJSON.Feature<GeoJSON.Polygon>);
                     const areaInHectares =
                       turf.area(boundaries.features[0]) / 10000;
                     updateFarmData("size", areaInHectares.toFixed(2));

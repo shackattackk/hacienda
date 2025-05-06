@@ -1,12 +1,10 @@
 "use client";
 
-import type { Farm } from "@/types/farm";
 import { AlertCircle, ArrowRight, Droplets, Sun } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
 export function Insights() {
-  // Mock AI insights
   const insights = [
     {
       title: "Irrigation Recommendation",

@@ -82,7 +82,7 @@ export function WeatherWidget({ boundaries }: WeatherWidgetProps) {
         <div className="flex justify-between">
           {weatherData.list
             .filter((forecast) => {
-              const [date, time] = forecast.dt_txt.split(" ");
+              const [time] = forecast.dt_txt.split(" ");
               return time.startsWith("12:00");
             })
             .slice(0, 5)

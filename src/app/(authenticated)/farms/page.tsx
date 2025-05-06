@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import { FarmCard } from "@/components/farm/farm-card";
 import { useFarms } from "@/hooks/use-farms";
 

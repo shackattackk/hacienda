@@ -1,6 +1,5 @@
 "use client";
 
-import { useEffect } from "react";
 import dynamic from "next/dynamic";
 import { useQuery } from "@tanstack/react-query";
 import { Farm } from "@/types/farm";

@@ -1,7 +1,6 @@
 "use client"
 import { Bell, HelpCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { useRouter } from "next/navigation"
 import { UserButton } from "@clerk/nextjs"
 import Link from "next/link"
 

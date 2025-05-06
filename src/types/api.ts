@@ -1,4 +1,4 @@
-import { Farm, NewFarm } from "@/types/farm";
+import { NewFarm } from "@/types/farm";
 
 export type CreateFarmRequest = NewFarm;
 

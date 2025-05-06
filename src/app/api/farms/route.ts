@@ -54,7 +54,7 @@ export async function GET(): Promise<NextResponse<ApiResponse<Farm[]>>> {
     return NextResponse.json({ data: farms }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
-      { data: null, error: { message: "Internal Server Error" } },
+      { data: null, error: { message: error instanceof Error ? error.message : "Internal Server Error" } },
       { status: 500 }
     );
   }

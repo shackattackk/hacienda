@@ -13,7 +13,7 @@ export default function GuidePage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">What is NDVI?</h2>
         <p className="mb-4">
-          NDVI (Normalized Difference Vegetation Index) is a numerical indicator that uses the visible and near-infrared bands of the electromagnetic spectrum to analyze whether the target being observed contains live green vegetation or not. It's a powerful tool for monitoring vegetation health and growth.
+          NDVI (Normalized Difference Vegetation Index) is a numerical indicator that uses the visible and near-infrared bands of the electromagnetic spectrum to analyze whether the target being observed contains live green vegetation or not. It&apos;s a powerful tool for monitoring vegetation health and growth.
         </p>
         <p className="mb-4">
           The NDVI value ranges from -1 to 1, where:
@@ -28,7 +28,7 @@ export default function GuidePage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Seasonal NDVI Interpretation</h2>
         <p className="mb-4">
-          Understanding how NDVI values change throughout the growing season is crucial for accurate interpretation. Here's what to expect during different stages:
+          Understanding how NDVI values change throughout the growing season is crucial for accurate interpretation. Here&apos;s what to expect during different stages:
         </p>
         
         <div className="space-y-6">
@@ -68,7 +68,7 @@ export default function GuidePage() {
             <ul className="list-disc pl-6 space-y-2">
               <li>Establish baseline NDVI curves for your specific crops and varieties</li>
               <li>Account for weather conditions when interpreting seasonal changes</li>
-              <li>Compare current season's NDVI progression with historical data</li>
+              <li>Compare current season&apos;s NDVI progression with historical data</li>
               <li>Use NDVI trends to identify potential issues before they become visible</li>
               <li>Consider crop-specific growth patterns when interpreting values</li>
             </ul>
@@ -141,7 +141,7 @@ export default function GuidePage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Limitations and Considerations</h2>
         <p className="mb-4">
-          While NDVI is a powerful tool, it's important to understand its limitations:
+          While NDVI is a powerful tool, it&apos;s important to understand its limitations:
         </p>
         <ul className="list-disc pl-6 space-y-2">
           <li>NDVI can be affected by atmospheric conditions and cloud cover</li>
